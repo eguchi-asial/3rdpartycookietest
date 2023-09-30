@@ -8,21 +8,23 @@ Chromeも2024年から段階的に禁止されるため、ゆくゆくはこの�
 
 # 準備
 
-1. npm install
+1. system1/npm install
 
-2. brew install mkcert
+2. system2/npm install
 
-3. mkcert -install
+3. brew install mkcert
 
-4. system1のrootディレクトリにて、mkcert hoge.com
+4. mkcert -install
+
+5. system1のrootディレクトリにて、mkcert hoge.com
 
 ※system1のrootに-key.pemと.pemが作成されます。
 
-5. system2のrootディレクトリにて、mkcert fuga.com
+6. system2のrootディレクトリにて、mkcert fuga.com
 
 ※system2のrootに-key.pemと.pemが作成されます。
 
-6. hostsに以下を追記
+7. hostsに以下を追記
 
 ```
 # 3rdpartycookie test
@@ -39,6 +41,13 @@ system1 % node index.js
 Listening on 9999
 ```
 
+2. system2を起動
+
+```
+system2 % node index.js
+Listening on 7777
+```
+
 4. Chromeで「https://hoge.com:9999/」にアクセス
 
 
@@ -47,3 +56,9 @@ Listening on 9999
 `hoge.com` を一般的なwebシステム、 `hoge.com` を広告システムとして考えるとイメージしやすい
 `hoge.com` から `https://fuga.com:7777/` が画面表示後に読み込まれ、fuga.comのscript内でCookieがセットされます。
 これにより、hoge.comに3rdPartyであるfuga.comのCookieが確認できます。
+
+3rdPartyCookieのセットには3rd側のCookieは `SameSite=None; Secure;` である必要あり、また、Secureがつくとhttpsでないと機能しません。
+そのため、localhostでhttpsを実現するのにmkcertを使ってます。
+
+localhostでさらに別ドメインんを実現するために、hostsでhoge.comとfuga.comを定義しています。
+mkcertでhoge.comとfuga.comの証明書をそれぞれ用意しているというこにです。
